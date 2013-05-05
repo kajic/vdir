@@ -121,9 +121,24 @@ class VDir(dict, VBase):
     pass
 
   def mkdir(self, path, create_intermediate=False):
+    container_path = os.path.dirname(path)
+    if not create_intermediate and not self.is_directory(container_path):
+      raise VIOError("%s is not a directory" % container_path)
+    else:
+      # We can turn on creation of intermediate directories because we 
+      # now know that only the last intermediate directory is missing
+      create_intermediate = True
+      
     cur = self.drill(path, create_intermediate=create_intermediate, treat_basename_as_directory=True)
     return cur
 
+  def is_directory(self, path):
+    try:
+      dir = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
+    except VIOError:
+      return False
+    else:
+      return hasattr(dir, "has_key")
   def cp(self, path, new_path=None):
     original = self.open(path)
     duplicate = self.copy(original)
