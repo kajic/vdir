@@ -49,6 +49,7 @@ class VDir(dict, VBase):
 
     self.cur = self
 
+    self[""] = self
     self["."] = self
     self[".."] = self.parent
 
@@ -132,7 +133,7 @@ class VDir(dict, VBase):
       filenames = []
 
       for fragment in dir:
-        if fragment in [".", ".."]:
+        if fragment in ["", ".", ".."]:
           continue
 
         if hasattr(dir[fragment], "walk"):
