@@ -23,15 +23,18 @@ class VBase(ComparableMixin, object):
     self.name = name
     if not parent:
       parent = self
-    self.parent = parent    
+    self.parent = parent
+
+  def __lt__(self, other):
+    return id(self)<id(other)
 
   def pwd(self):
     cur = self.cur
     path = [cur.name]
 
     while cur != cur.parent:
-      path.append(cur.name)
       cur = cur.parent
+      path.append(cur.name)
 
     path.reverse()
     return "/".join(path)
@@ -46,9 +49,6 @@ class VFile(VBase, StringIO):
   def set_mode(self, mode):
     self.mode = set(mode)
 
-class VDir(dict, VBase):
-  def __init__(self, name, parent=None):
-    VBase.__init__(name, parent)
     if set("rw") & self.mode:
       self.seek(0)
     elif "a" in self.mode:
@@ -63,6 +63,11 @@ class VDir(dict, VBase):
     if not "r" in self.mode:
       raise VIOError("File not open for reading")
     return super(VFile, self).read(*args, **kwargs)
+
+class VDir(VBase, dict):
+  def __init__(self, name=".", parent=None):
+    VBase.__init__(self, name, parent)
+    dict.__init__(self)
 
     self.cur = self
 
@@ -86,10 +91,10 @@ class VDir(dict, VBase):
       if not fragment:
         continue
 
-      if not cur.has_key(fragment):
-        if not hasattr(cur, "has_key"):
-          raise DirError("%s is not a directory" % cur.pwd())
+      if not hasattr(cur, "has_key"):
+        raise VIOError("%s is not a directory" % cur.pwd())
 
+      if not cur.has_key(fragment):
         if create_intermediate:
           cur[fragment] = VDir(name=fragment, parent=cur)
         else:
@@ -99,27 +104,22 @@ class VDir(dict, VBase):
       
     return cur
 
-  def open(self, path):
+  def open(self, path, mode="rw"):
     dir = self.drill(path, create_intermediate=True)
 
     basename = os.path.basename(path)
     if basename:
       if hasattr(dir, "has_key"):
         if not dir.has_key(basename):
-          dir[basename] = VFile(basename, dir)
+          dir[basename] = VFile(basename, dir, mode)
+        elif hasattr(dir[basename], "set_mode"):
+          dir[basename].set_mode(mode)
 
         return dir[basename]
       else:
         raise VIOError("%s is not a directory" % os.path.dirname(path))
     else:
       return dir
-
-  def cd(self, path):
-    self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
-    return self.cur
-
-  def pwd(self):
-    pass
 
   def mkdir(self, path, create_intermediate=False):
     container_path = os.path.dirname(path)
@@ -140,6 +140,11 @@ class VDir(dict, VBase):
       return False
     else:
       return hasattr(dir, "has_key")
+
+  def cd(self, path):
+    self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
+    return self.cur
+
   def cp(self, path, new_path=None):
     original = self.open(path)
 
@@ -180,7 +185,7 @@ class VDir(dict, VBase):
       candiates.extend([(dir[fragment], path+[fragment]) for fragment in dirnames])
 
   def zipfile(self, mode="w", compression=zipfile.ZIP_DEFLATED, exclude_compress=[]):
-    zip_data = VFile()
+    zip_data = VFile("file.zip")
     zip = zipfile.ZipFile(zip_data, "w", compression)
 
     for base, dirs, files in self.walk():
@@ -191,53 +196,3 @@ class VDir(dict, VBase):
         zip.writestr(filename, data, file_compression)
 
     return zip_data
-
-v = VDir()
-
-v.open(".emacs").write("data0")
-v.open("opt/git-create-branch").write("data1")
-v.open("opt/trustme").write("data2")
-v.open("opt/virtualenv/quail").write("data3")
-v.open("opt/virtualenv")
-
-v.open("opt/./virtualenv/../virtualenv/quail").write("data4")
-
-v.mkdir("opt/virtualenv/readmill/", create_intermediate=True)
-
-v.cp("opt/virtualenv/", "opt/virtualenv_copy")
-
-print "quail value", v.open("opt/virtualenv/quail").read()
-
-print "walk", list(v.walk())
-
-
-v.open("opt/virtualenv/readmill/")
-
-v.cd("opt")
-print "pwd", v.pwd()
-print "walk opt", list(v.walk())
-
-v.cd("virtualenv")
-print "pwd", v.pwd()
-print "walk opt/virtualenv", list(v.walk())
-
-v.cd("..")
-print "pwd", v.pwd()
-print "walk opt", list(v.walk())
-
-v.cd(".")
-print "pwd", v.pwd()
-print "walk opt", list(v.walk())
-
-print v.zipfile().getvalue()
-
-try:
-  v.open(".emacs/hej")
-except DirError, e:
-  print e
-
-try:
-  v.open("opt/trustme/.ssh")
-except DirError, e:
-  print e
-
