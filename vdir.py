@@ -1,7 +1,7 @@
 import os 
 import zipfile
 
-from copy import copy
+from copy import deepcopy
 from StringIO import StringIO
 
 class VIOError(IOError): pass
@@ -141,7 +141,8 @@ class VDir(dict, VBase):
       return hasattr(dir, "has_key")
   def cp(self, path, new_path=None):
     original = self.open(path)
-    duplicate = self.copy(original)
+
+    duplicate = deepcopy(original)
 
     if new_path:
       name = os.path.basename(new_path)
