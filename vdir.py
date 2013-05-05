@@ -26,8 +26,9 @@ class VBase(ComparableMixin, object):
     self.parent = parent    
 
   def pwd(self):
-    cur = self
-    path = [self.name]
+    cur = self.cur
+    path = [cur.name]
+
     while cur != cur.parent:
       path.append(cur.name)
       cur = cur.parent
