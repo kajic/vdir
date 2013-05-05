@@ -4,7 +4,7 @@ import zipfile
 from copy import copy
 from StringIO import StringIO
 
-class VDirError(Exception): pass
+class VIOError(IOError): pass
 
 class ComparableMixin(object):
   def __eq__(self, other):
@@ -75,7 +75,7 @@ class VDir(dict, VBase):
         if create_intermediate:
           cur[fragment] = VDir(name=fragment, parent=cur)
         else:
-          raise DirError("%s is not a directory" % os.path.join(cur.pwd(), fragment))
+          raise VIOError("%s is not a directory" % os.path.join(cur.pwd(), fragment))
 
       cur = cur[fragment]
       
@@ -92,7 +92,7 @@ class VDir(dict, VBase):
 
         return dir[basename]
       else:
-        raise DirError("%s is not a directory" % os.path.dirname(path))
+        raise VIOError("%s is not a directory" % os.path.dirname(path))
     else:
       return dir
 
