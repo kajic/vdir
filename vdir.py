@@ -35,17 +35,33 @@ class VBase(ComparableMixin, object):
     path.reverse()
     return "/".join(path)
 
-class VFile(StringIO, VBase):
-  def __init__(self, name, parent=None):
-    VBase.__init__(name, parent)
+class VFile(VBase, StringIO):
+  def __init__(self, name, parent=None, mode="rw"):
+    VBase.__init__(self, name, parent)
+    StringIO.__init__(self)
 
-  def read(self):
-    self.seek(0)
-    return super(VFile, self).read()
+    self.set_mode(mode)
+
+  def set_mode(self, mode):
+    self.mode = set(mode)
 
 class VDir(dict, VBase):
   def __init__(self, name, parent=None):
     VBase.__init__(name, parent)
+    if set("rw") & self.mode:
+      self.seek(0)
+    elif "a" in self.mode:
+      self.seek(self.len)
+
+  def write(self, *args, **kwargs):
+    if not set("wa") & self.mode:
+      raise VIOError("File not open for writing")
+    return super(VFile, self).write(*args, **kwargs)
+
+  def read(self, *args, **kwargs):
+    if not "r" in self.mode:
+      raise VIOError("File not open for reading")
+    return super(VFile, self).read(*args, **kwargs)
 
     self.cur = self
 
