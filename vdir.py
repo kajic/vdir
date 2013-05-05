@@ -6,7 +6,19 @@ from StringIO import StringIO
 
 class VDirError(Exception): pass
 
-class VBase(object):
+class ComparableMixin(object):
+  def __eq__(self, other):
+    return not self<other and not other<self
+  def __ne__(self, other):
+    return self<other or other<self
+  def __gt__(self, other):
+    return other<self
+  def __ge__(self, other):
+    return not self<other
+  def __le__(self, other):
+    return not other<self
+
+class VBase(ComparableMixin, object):
   def __init__(self, name, parent):
     self.name = name
     if not parent:
