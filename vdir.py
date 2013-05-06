@@ -46,6 +46,9 @@ class VFile(VBase, StringIO):
 
     self.set_mode(mode)
 
+  def is_directory(self):
+    return False
+
   def set_mode(self, mode):
     self.mode = set(mode)
 
@@ -74,6 +77,17 @@ class VDir(VBase, dict):
     self[""] = self
     self["."] = self
     self[".."] = self.parent
+
+  def is_directory(self, path=None):
+    if not path:
+      return True
+
+    try:
+      vobj = self.open(path)
+    except VIOError:
+      return False
+    else:
+      return vobj.is_directory()
 
   def drill(self, path, create_intermediate=True, treat_basename_as_directory=False):
     dirname = os.path.dirname(path)
@@ -132,14 +146,6 @@ class VDir(VBase, dict):
       
     cur = self.drill(path, create_intermediate=create_intermediate, treat_basename_as_directory=True)
     return cur
-
-  def is_directory(self, path):
-    try:
-      dir = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
-    except VIOError:
-      return False
-    else:
-      return hasattr(dir, "has_key")
 
   def cd(self, path):
     self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
