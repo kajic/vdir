@@ -25,6 +25,9 @@ class VBase(ComparableMixin, object):
       parent = self
     self.parent = parent
 
+  def __str__(self):
+    return "<%s>: %s" % (self.name,  super(VDir, self).__str__())
+
   def __lt__(self, other):
     return id(self)<id(other)
 
