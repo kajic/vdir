@@ -28,11 +28,14 @@ class VBase(ComparableMixin, object):
   def __lt__(self, other):
     return id(self)<id(other)
 
+  def is_root(self):
+    return self == self.parent 
+
   def pwd(self):
     cur = self.cur
     path = [cur.name]
 
-    while cur != cur.parent:
+    while not cur.is_root():
       cur = cur.parent
       path.append(cur.name)
 
