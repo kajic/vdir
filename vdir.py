@@ -174,21 +174,25 @@ class VDir(VBase, dict):
 
     for dir, path in candiates:
       dirnames = []
+      dirs = []
       filenames = []
+      files = []
 
-      for fragment in dir:
-        if fragment in ["", ".", ".."]:
+      for name, vobj in dir.items():
+        if name in ["", ".", ".."]:
           continue
 
-        if hasattr(dir[fragment], "walk"):
-          dirnames.append(fragment)
+        if vobj.is_directory():
+          dirnames.append(name)
+          dirs.append(vobj)
         else:
-          filenames.append(fragment)
+          filenames.append(name)
+          files.append(vobj)
 
-      yield ("/".join(path), dirnames, filenames)
+      yield ("/".join(path), dirnames, dirs, filenames, files)
 
       # Add child directories to walk candiates
-      candiates.extend([(dir[fragment], path+[fragment]) for fragment in dirnames])
+      candiates.extend([(dir[name], path+[name]) for name in dirnames])
 
   def zipfile(self, mode="w", compression=zipfile.ZIP_DEFLATED, exclude_compress=[]):
     zip_data = VFile("file.zip")
