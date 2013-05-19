@@ -253,7 +253,7 @@ class VDir(VBase, dict):
       candiates.extend([(dir[name], path+[name]) for name in dirnames])
 
   def zipfile(self, mode="w", compression=zipfile.ZIP_DEFLATED, exclude_compress=[]):
-    zip_data = VFile("file.zip")
+    zip_data = VFile("vdir.zip")
     zipfile_object = zipfile.ZipFile(zip_data, "w", compression)
 
     for base, dirnames, dirs, filenames, files in self.walk():
