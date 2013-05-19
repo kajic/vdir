@@ -34,6 +34,12 @@ class VBase(ComparableMixin, object):
   def is_root(self):
     return self == self.parent 
 
+  def root(self):
+    cur = self.cur
+    while not cur.is_root():
+      cur = cur.parent
+    return cur
+
   def pwd(self):
     cur = self.cur
     path = [cur.name]
