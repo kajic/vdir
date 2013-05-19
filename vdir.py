@@ -214,6 +214,9 @@ class VDir(VBase, dict):
 
     return duplicate
 
+  def mv(self, path_or_vobj, new_path):
+    self.cp(path_or_vobj, new_path, move=True)
+
   def walk(self):
     candiates = [(self.cur, [])]
 
