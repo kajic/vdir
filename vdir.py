@@ -246,11 +246,11 @@ class VDir(VBase, dict):
     zip_data = VFile("file.zip")
     zip = zipfile.ZipFile(zip_data, "w", compression)
 
-    for base, dirs, files in self.walk():
-      for file in files:
-        filename = os.path.join(base, file)
-        data = self.open(filename).getvalue()
-        file_compression = zipfile.ZIP_STORED if file in exclude_compress else compression
-        zip.writestr(filename, data, file_compression)
+    for base, dirnames, dirs, filenames, files in self.walk():
+      for name, file in zip(filenames, files):
+        path = os.path.join(base, name)
+        data = file.getvalue()
+        file_compression = zipfile.ZIP_STORED if name in exclude_compress else compression
+        zip.writestr(path, data, file_compression)
 
     return zip_data
