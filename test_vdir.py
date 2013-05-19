@@ -235,6 +235,15 @@ class TestVDir(unittest.TestCase):
     wing = vd.open("opt/virtualenv_copy/virtualenv/wing")
     self.assertEqual("flyes", wing.read())
 
+  def test_rm(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.rm("opt/virtualenv/quail")
+
+    quail = vd.open("opt/virtualenv/quail")
+    self.assertEqual("", quail.read())
+
   def test_zipfile(self):
     vd = VDir()
 

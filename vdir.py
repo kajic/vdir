@@ -227,6 +227,13 @@ class VDir(VBase, dict):
   def mv(self, path_or_vobj, new_path):
     self.cp(path_or_vobj, new_path, move=True)
 
+  def rm(self, path_or_vobj="."):
+    if isinstance(path_or_vobj, str):
+      vobj = self.open(path_or_vobj)
+    else:
+      vobj = path_or_vobj
+    vobj.unattach()
+
   def walk(self):
     candiates = [(self.cur, [])]
 
