@@ -224,3 +224,11 @@ class TestVDir(unittest.TestCase):
     # Assert that the file has been overwritten
     wing = vd.open("opt/virtualenv_copy/virtualenv/wing")
     self.assertEqual("flyes", wing.read())
+
+  def test_zipfile(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+        
+    vd.zipfile()
