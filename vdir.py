@@ -125,7 +125,7 @@ class VDir(VBase, dict):
       if not fragment:
         continue
 
-      if not hasattr(cur, "has_key"):
+      if not cur.is_directory():
         raise VIOError("%s is not a directory" % cur.pwd())
 
       if not cur.has_key(fragment):
@@ -143,7 +143,8 @@ class VDir(VBase, dict):
 
     basename = os.path.basename(path)
     if basename:
-      if hasattr(dir, "has_key"):
+      if vobj.is_directory():
+        dir = vobj
         if not dir.has_key(basename):
           if create:
             dir[basename] = VFile(basename, dir, mode)
@@ -156,7 +157,7 @@ class VDir(VBase, dict):
       else:
         raise VIOError("%s is not a directory" % os.path.dirname(path))
     else:
-      return dir
+      return vobj
 
   def mkdir(self, path, create_intermediate=False):
     container_path = os.path.dirname(path)
