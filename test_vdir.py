@@ -235,6 +235,19 @@ class TestVDir(unittest.TestCase):
     wing = vd.open("opt/virtualenv_copy/virtualenv/wing")
     self.assertEqual("flyes", wing.read())
 
+  def test_mv_dir(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+        
+    vd.mv("opt/virtualenv", "opt/virtualenv_moved")
+
+    self.assertRaises(VIOError, vd.open, "opt/virtualenv", create=False)
+
+    moved = vd.open("opt/virtualenv_moved/quail")
+    self.assertEqual("foo", moved.read())
+
   def test_rm(self):
     vd = VDir()
 
