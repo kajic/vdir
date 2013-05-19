@@ -10,37 +10,37 @@ from vdir import VDir
 
 vd = VDir()
 
-# write to file
+# Write to file
 vd.open("path/to/some/file").write("your data")
 
-# create directory, go inside it, and write to some other file
+# Create directory, go inside it, and write to some other file
 vd.mkdir("foo")
 vd.cd("foo")
 vd.open("bar").write("something else") # writes to /foo/bar
 
-# read a file
+# Read from file
 vd.open("bar").read()
 
-# see the current path
+# Get the current path
 vd.pwd()
 
-# copy a directory and all its contents
+# Copy directory and all its contents
 vd.cp("/foo", "/foo_copy")
 
-# move the copy somewhere else
+# Move the copied directory somewhere else
 vd.mv("/foo_copy", "/foo_moved")
 
-# create a file, then remove it
+# Create a file, then remove it
 vd.open("unnecessary").write("foo")
 vd.rm("unnecessary")
 
-# walk over all directories and files in the virtual directory
+# Walk over all directories and files in the virtual directory
 for base, dirnames, dirs, filenames, files in self.walk():
   pass
   
-# create a zip from the virtual directory
+# Create a zip from the virtual directory
 zip = vd.compress()
 
-# get zip data
+# Get zip data
 zip.read()
 ```
