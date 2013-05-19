@@ -189,12 +189,31 @@ class VDir(VBase, dict):
       name = os.path.basename(new_path)
       if not name:
         name = original.name
+  def attach(self, vobj, path):
+    destination = self.open(path)
+    if destination.is_file() or vobj.is_file():
+      # If the destination is a file we cannot attach anything to it,
+      # therefore we may simply overwrite it. The same is true if vobj
+      # is a file; it is safe to overwrite the destination with it.
+      destination.parent[destination.name] = vobj
+      vobj.name = destination.name
+    else:
+      destination.drill(vobj.name, treat_basename_as_directory=True)
+      destination.cd(vobj.name)
+      for base, dirnames, dirs, filenames, files in vobj.walk():
+        destination.cd(base)
+        for cur in dirs+files:
+          destination.cur[cur.name] = cur
+        destination.cd("-")
 
       destination = self.open(new_path)
       if hasattr(destination, "has_key"):
         destination[name] = duplicate
       else:
         destination.parent[name] = duplicate
+  def unattach(self):
+    if not self.is_root():
+      del self.parent[self.name]
 
     return duplicate
 
