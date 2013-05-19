@@ -120,7 +120,10 @@ class VDir(VBase, dict):
     dirname = os.path.dirname(path)
     drill_path = dirname.split("/")
 
-    cur = self.cur
+    if path.startswith("/"):
+      cur = self.root()
+    else:
+      cur = self.cur
 
     if treat_basename_as_directory:
       basename = os.path.basename(path)
@@ -184,8 +187,6 @@ class VDir(VBase, dict):
     if path == "-":
       self.cur = last_cur
     else:
-      if path.startswith("/"):
-        self.cur = self.root()
       self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
     return self.cur
 
