@@ -89,7 +89,7 @@ class VDir(VBase, dict):
       return True
 
     try:
-      vobj = self.open(path)
+      vobj = self.open(path, create=False)
     except VIOError:
       return False
     else:
