@@ -263,4 +263,5 @@ class VDir(VBase, dict):
         file_compression = zipfile.ZIP_STORED if name in exclude_compress else compression
         zipfile_object.writestr(path, data, file_compression)
 
+    zip_data.seek(0)
     return zip_data
