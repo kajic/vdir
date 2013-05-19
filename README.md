@@ -31,4 +31,6 @@ for base, dirnames, dirs, filenames, files in self.walk():
 # create zipfile from the virtual directory
 zipfile = vd.zipfile()
 
+# show raw zipfile data
+zipfile.read()
 ```
