@@ -51,6 +51,10 @@ class VBase(ComparableMixin, object):
     path.reverse()
     return "/".join(path)
 
+  def unattach(self):
+    if not self.is_root():
+      del self.parent[self.name]
+
 class VFile(VBase, StringIO):
   def __init__(self, name, parent=None, mode="rw"):
     VBase.__init__(self, name, parent)
@@ -206,10 +210,6 @@ class VDir(VBase, dict):
         for cur in dirs+files:
           destination.cur[cur.name] = cur
         destination.cd("-")
-
-  def unattach(self):
-    if not self.is_root():
-      del self.parent[self.name]
 
   def cp(self, path_or_vobj, new_path=None, move=False):
     if isinstance(path_or_vobj, str):
