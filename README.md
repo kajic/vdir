@@ -38,6 +38,6 @@ for base, dirnames, dirs, filenames, files in self.walk():
 # create zip from the virtual directory
 zip = vd.compress()
 
-# show raw zipfile data
+# get zip data
 zip.read()
 ```
