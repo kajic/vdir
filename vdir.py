@@ -124,14 +124,17 @@ class VDir(VBase, dict):
       
     return cur
 
-  def open(self, path, mode="rw"):
-    dir = self.drill(path, create_intermediate=True)
+  def open(self, path, create=True, mode="rw"):
+    vobj = self.drill(path, create_intermediate=create)
 
     basename = os.path.basename(path)
     if basename:
       if hasattr(dir, "has_key"):
         if not dir.has_key(basename):
-          dir[basename] = VFile(basename, dir, mode)
+          if create:
+            dir[basename] = VFile(basename, dir, mode)
+          else:
+            raise VIOError("%s does not exist", path)
         elif hasattr(dir[basename], "set_mode"):
           dir[basename].set_mode(mode)
 
