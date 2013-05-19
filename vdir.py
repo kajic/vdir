@@ -180,15 +180,6 @@ class VDir(VBase, dict):
       self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
     return self.cur
 
-  def cp(self, path, new_path=None):
-    original = self.open(path)
-
-    duplicate = deepcopy(original)
-
-    if new_path:
-      name = os.path.basename(new_path)
-      if not name:
-        name = original.name
   def attach(self, vobj, path):
     destination = self.open(path)
     if destination.is_file() or vobj.is_file():
@@ -206,14 +197,20 @@ class VDir(VBase, dict):
           destination.cur[cur.name] = cur
         destination.cd("-")
 
-      destination = self.open(new_path)
-      if hasattr(destination, "has_key"):
-        destination[name] = duplicate
-      else:
-        destination.parent[name] = duplicate
   def unattach(self):
     if not self.is_root():
       del self.parent[self.name]
+
+  def cp(self, path_or_vobj, new_path=None, move=False):
+    if isinstance(path_or_vobj, str):
+      original = self.open(path_or_vobj)
+      duplicate = deepcopy(original)
+    else:
+      duplicate = deepcopy(path_or_vobj)
+
+    self.attach(duplicate, new_path)
+    if move:
+      original.unattach()
 
     return duplicate
 

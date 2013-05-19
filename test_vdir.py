@@ -159,3 +159,44 @@ class TestVDir(unittest.TestCase):
     duplicate = vd.open("opt/virtualenv_copy/virtualenv/egg")
     self.assertEqual(original.read(), duplicate.read())
     
+  def test_cp_dir_into_existing_dir(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+
+    vd.mkdir("opt/virtualenv_copy/virtualdir/", create_intermediate=True)
+        
+    vd.cp("opt/virtualenv/", "opt/virtualenv_copy/")
+
+    # Assert the copied files contain the same data
+    original = vd.open("opt/virtualenv/quail")
+    duplicate = vd.open("opt/virtualenv_copy/virtualenv/quail")
+    self.assertEqual(original.read(), duplicate.read())
+
+    original = vd.open("opt/virtualenv/egg")
+    duplicate = vd.open("opt/virtualenv_copy/virtualenv/egg")
+    self.assertEqual(original.read(), duplicate.read())
+
+  def test_cp_dir_into_existing_dir_with_content(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv_copy/virtualenv/wing").write("baz")
+        
+    vd.cp("opt/virtualenv/", "opt/virtualenv_copy/")
+
+    # Assert that the wing file has not been overwritten
+    wing = vd.open("opt/virtualenv_copy/virtualenv/wing")
+    self.assertEqual("baz", wing.read())
+
+  def test_cp_dir_into_existing_dir_with_same_content(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/wing").write("flyes")
+    vd.open("opt/virtualenv_copy/virtualenv/wing").write("baz")
+        
+    vd.cp("opt/virtualenv/", "opt/virtualenv_copy/")
+
+    # Assert that the file has been overwritten
+    wing = vd.open("opt/virtualenv_copy/virtualenv/wing")
+    self.assertEqual("flyes", wing.read())
