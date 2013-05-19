@@ -112,7 +112,6 @@ class TestVDir(unittest.TestCase):
     duplicate = vd.open("opt/virtualenv_copy/quail")
     self.assertEqual(original.read(), duplicate.read())
 
-    # Assert the copied files contain the same data
     original = vd.open("opt/virtualenv/egg")
     duplicate = vd.open("opt/virtualenv_copy/egg")
     self.assertEqual(original.read(), duplicate.read())
@@ -136,7 +135,6 @@ class TestVDir(unittest.TestCase):
     duplicate = vd.open("opt/virtualenv_copy/quail")
     self.assertEqual(original.read(), duplicate.read())
 
-    # Assert the copied files contain the same data
     original = vd.open("opt/virtualenv/egg")
     duplicate = vd.open("opt/virtualenv_copy/egg")
     self.assertEqual(original.read(), duplicate.read())
@@ -154,7 +152,6 @@ class TestVDir(unittest.TestCase):
     duplicate = vd.open("opt/virtualenv_copy/virtualenv/quail")
     self.assertEqual(original.read(), duplicate.read())
 
-    # Assert the copied files contain the same data
     original = vd.open("opt/virtualenv/egg")
     duplicate = vd.open("opt/virtualenv_copy/virtualenv/egg")
     self.assertEqual(original.read(), duplicate.read())
