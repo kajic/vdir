@@ -35,9 +35,9 @@ vd.rm("unnecessary")
 for base, dirnames, dirs, filenames, files in self.walk():
   pass
   
-# create zipfile from the virtual directory
-zipfile = vd.zipfile()
+# create zip from the virtual directory
+zip = vd.compress()
 
 # show raw zipfile data
-zipfile.read()
+zip.read()
 ```
