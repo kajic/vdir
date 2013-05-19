@@ -7,7 +7,16 @@ from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 
 class VIOError(IOError): pass
 
-class ComparableMixin(object):
+class VObj(object):
+  def __init__(self, name, parent):
+    self.name = name
+    if not parent:
+      parent = self
+    self.parent = parent
+
+  def __str__(self):
+    return "<%s>: %s" % (self.name,  super(VDir, self).__str__())
+
   def __eq__(self, other):
     return not self<other and not other<self
   def __ne__(self, other):
@@ -18,17 +27,6 @@ class ComparableMixin(object):
     return not self<other
   def __le__(self, other):
     return not other<self
-
-class VObj(ComparableMixin, object):
-  def __init__(self, name, parent):
-    self.name = name
-    if not parent:
-      parent = self
-    self.parent = parent
-
-  def __str__(self):
-    return "<%s>: %s" % (self.name,  super(VDir, self).__str__())
-
   def __lt__(self, other):
     return id(self)<id(other)
 
