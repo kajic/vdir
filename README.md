@@ -24,6 +24,13 @@ vd.pwd()
 # copy a directory and all its contents
 vd.cp("/foo", "/foo_copy")
 
+# move the copy somewhere else
+vd.mv("/foo_copy", "/foo_moved")
+
+# create a file, then remove it
+vd.open("unnecessary").write("foo")
+vd.rm("unnecessary")
+
 # walk over all directories and files in the virtual directory
 for base, dirnames, dirs, filenames, files in self.walk():
   pass
