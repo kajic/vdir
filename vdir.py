@@ -120,7 +120,7 @@ class VDir(VBase, dict):
     else:
       return vobj.is_directory()
 
-  def drill(self, path, create_intermediate=True, treat_basename_as_directory=False):
+  def drill(self, path, create_intermediate=True, treat_basename_as_directory=False, overwrite=False):
     dirname = os.path.dirname(path)
     drill_path = dirname.split("/")
 
@@ -139,13 +139,21 @@ class VDir(VBase, dict):
         continue
 
       if not cur.is_directory():
-        raise VIOError("%s is not a directory" % cur.pwd())
+        if overwrite:
+          dir = VDir(name=cur.name, parent=cur.parent)
+          cur.parent[cur.name] = dir
+          cur = dir
+        else:
+          raise VIOError("%s is not a directory" % cur.pwd())
+
 
       if not cur.has_key(fragment):
         if create_intermediate:
           cur[fragment] = VDir(name=fragment, parent=cur)
         else:
           raise VIOError("%s is not a directory" % os.path.join(cur.pwd(), fragment))
+      elif overwrite and cur[fragment].is_file():
+        cur[fragment] = VDir(name=fragment, parent=cur)
 
       cur = cur[fragment]
       
