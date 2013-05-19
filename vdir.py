@@ -78,6 +78,7 @@ class VDir(VBase, dict):
     VBase.__init__(self, name, parent)
     dict.__init__(self)
 
+    self.last_cur = self
     self.cur = self
 
     self[""] = self
@@ -157,7 +158,12 @@ class VDir(VBase, dict):
     return cur
 
   def cd(self, path):
-    self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
+    last_cur = self.last_cur
+    self.last_cur = self.cur
+    if path == "-":
+      self.cur = last_cur
+    else:      
+      self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
     return self.cur
 
   def cp(self, path, new_path=None):
