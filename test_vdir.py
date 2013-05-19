@@ -131,6 +131,24 @@ class TestVDir(unittest.TestCase):
     duplicate.seek(0)
     self.assertNotEqual(original.read(), duplicate.read())
 
+  def test_cp_with_absolute_paths(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+    
+    vd.cd("opt/virtualenv")
+    vd.cp("/opt/virtualenv", "/opt/virtualenv_copy")
+
+    # Assert the copied files contain the same data
+    original = vd.open("/opt/virtualenv/quail")
+    duplicate = vd.open("/opt/virtualenv_copy/quail")
+    self.assertEqual(original.read(), duplicate.read())
+
+    original = vd.open("/opt/virtualenv/egg")
+    duplicate = vd.open("/opt/virtualenv_copy/egg")
+    self.assertEqual(original.read(), duplicate.read())
+
   def test_cp_dir_trailing_slash(self):
     vd = VDir()
 
