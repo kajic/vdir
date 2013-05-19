@@ -50,63 +50,73 @@ class TestVDir(unittest.TestCase):
     self.assertRaises(VIOError, self.vd.mkdir, "bar/foo")
 
   def test_cd(self):
-    self.vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
+    vd = VDir()
 
-    self.vd.cd("foo")
-    self.assertEqual("foo", self.vd.cur.name)
+    vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
 
-    self.vd.cd("bar/baz")
-    self.assertEqual("baz", self.vd.cur.name)
+    vd.cd("foo")
+    self.assertEqual("foo", vd.cur.name)
 
-    self.vd.cd("qux")
-    self.assertEqual("qux", self.vd.cur.name)
+    vd.cd("bar/baz")
+    self.assertEqual("baz", vd.cur.name)
 
-    self.assertRaises(VIOError, self.vd.cd, "foo")
+    vd.cd("qux")
+    self.assertEqual("qux", vd.cur.name)
+
+    self.assertRaises(VIOError, vd.cd, "foo")
 
   def test_cd_parent(self):
-    self.vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
+    vd = VDir()
 
-    self.vd.cd("foo/bar/baz/qux")
+    vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
 
-    self.vd.cd("..")
-    self.assertEqual("baz", self.vd.cur.name)
+    vd.cd("foo/bar/baz/qux")
 
-    self.vd.cd("../../")
-    self.assertEqual("foo", self.vd.cur.name)
+    vd.cd("..")
+    self.assertEqual("baz", vd.cur.name)
 
-    self.vd.cd("bar/baz/../baz")
-    self.assertEqual("baz", self.vd.cur.name)
+    vd.cd("../../")
+    self.assertEqual("foo", vd.cur.name)
+
+    vd.cd("bar/baz/../baz")
+    self.assertEqual("baz", vd.cur.name)
 
   def test_cd_nop(self):
-    self.vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
+    vd = VDir()
 
-    self.vd.cd("foo/bar/baz")
+    vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
 
-    self.vd.cd(".//")
-    self.assertEqual("baz", self.vd.cur.name)
+    vd.cd("foo/bar/baz")
 
-    self.vd.cd("./.")
-    self.assertEqual("baz", self.vd.cur.name)
+    vd.cd(".//")
+    self.assertEqual("baz", vd.cur.name)
+
+    vd.cd("./.")
+    self.assertEqual("baz", vd.cur.name)
 
   def test_cd_absolute(self):
-    self.vd.mkdir("foo/bar/baz", create_intermediate=True)
-    self.vd.mkdir("bar/foo", create_intermediate=True)
+    vd = VDir()
 
-    self.vd.cd("foo/bar/baz")
+    vd.mkdir("foo/bar/baz", create_intermediate=True)
+    vd.mkdir("bar/foo", create_intermediate=True)
 
-    self.vd.cd("/bar/foo")
-    self.assertEqual("./bar/foo", self.vd.pwd())
+    vd.cd("foo/bar/baz")
+
+    vd.cd("/bar/foo")
+    self.assertEqual("./bar/foo", vd.pwd())
 
   def test_pwd(self):
-    self.vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
+    vd = VDir()
+
+    vd.mkdir("foo/bar/baz/qux", create_intermediate=True)
     
-    self.assertEqual(".", self.vd.pwd())
+    self.assertEqual(".", vd.pwd())
 
-    self.vd.cd("foo")
-    self.assertEqual("./foo", self.vd.pwd())
+    vd.cd("foo")
+    self.assertEqual("./foo", vd.pwd())
 
-    self.vd.cd("bar")
-    self.assertEqual("./foo/bar", self.vd.pwd())
+    vd.cd("bar")
+    self.assertEqual("./foo/bar", vd.pwd())
     
   def test_cp_dir(self):
     vd = VDir()
