@@ -52,6 +52,9 @@ class VFile(VBase, StringIO):
 
     self.set_mode(mode)
 
+  def is_file(self):
+    return True
+
   def is_directory(self):
     return False
 
@@ -84,6 +87,17 @@ class VDir(VBase, dict):
     self[""] = self
     self["."] = self
     self[".."] = self.parent
+
+  def is_file(self, path=None):
+    if not path:
+      return False
+
+    try:
+      vobj = self.open(path, create=False)
+    except VIOError:
+      return False
+    else:
+      return vobj.is_file()    
 
   def is_directory(self, path=None):
     if not path:
