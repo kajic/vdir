@@ -19,7 +19,7 @@ class ComparableMixin(object):
   def __le__(self, other):
     return not other<self
 
-class VBase(ComparableMixin, object):
+class VObj(ComparableMixin, object):
   def __init__(self, name, parent):
     self.name = name
     if not parent:
@@ -56,9 +56,9 @@ class VBase(ComparableMixin, object):
     if not self.is_root():
       del self.parent[self.name]
 
-class VFile(VBase, StringIO):
+class VFile(VObj, StringIO):
   def __init__(self, name, parent=None, mode="rw"):
-    VBase.__init__(self, name, parent)
+    VObj.__init__(self, name, parent)
     StringIO.__init__(self)
 
     self.set_mode(mode)
@@ -87,9 +87,9 @@ class VFile(VBase, StringIO):
       raise VIOError("File not open for reading")
     return super(VFile, self).read(*args, **kwargs)
 
-class VDir(VBase, dict):
+class VDir(VObj, dict):
   def __init__(self, name=".", parent=None):
-    VBase.__init__(self, name, parent)
+    VObj.__init__(self, name, parent)
     dict.__init__(self)
 
     self.last_cur = self
