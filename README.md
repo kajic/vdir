@@ -18,6 +18,9 @@ vd.mkdir("foo")
 vd.cd("foo")
 vd.open("bar").write("something else") # writes to /foo/bar
 
+# read a file
+vd.open("bar").read()
+
 # see the current path
 vd.pwd()
 
@@ -35,7 +38,7 @@ vd.rm("unnecessary")
 for base, dirnames, dirs, filenames, files in self.walk():
   pass
   
-# create zip from the virtual directory
+# create a zip from the virtual directory
 zip = vd.compress()
 
 # get zip data
