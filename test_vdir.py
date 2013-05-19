@@ -82,11 +82,20 @@ class TestVDir(unittest.TestCase):
 
     self.vd.cd("foo/bar/baz")
 
-    self.vd.cd("//")
+    self.vd.cd(".//")
     self.assertEqual("baz", self.vd.cur.name)
 
     self.vd.cd("./.")
     self.assertEqual("baz", self.vd.cur.name)
+
+  def test_cd_absolute(self):
+    self.vd.mkdir("foo/bar/baz", create_intermediate=True)
+    self.vd.mkdir("bar/foo", create_intermediate=True)
+
+    self.vd.cd("foo/bar/baz")
+
+    self.vd.cd("/bar/foo")
+    self.assertEqual("./bar/foo", self.vd.pwd())
 
   def test_pwd(self):
     self.vd.mkdir("foo/bar/baz/qux", create_intermediate=True)

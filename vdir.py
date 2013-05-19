@@ -180,9 +180,12 @@ class VDir(VBase, dict):
   def cd(self, path):
     last_cur = self.last_cur
     self.last_cur = self.cur
+
     if path == "-":
       self.cur = last_cur
-    else:      
+    else:
+      if path.startswith("/"):
+        self.cur = self.root()
       self.cur = self.drill(path, create_intermediate=False, treat_basename_as_directory=True)
     return self.cur
 
