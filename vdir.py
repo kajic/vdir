@@ -112,10 +112,9 @@ class VDir(VBase, dict):
 
   def drill(self, path, create_intermediate=True, treat_basename_as_directory=False):
     dirname = os.path.dirname(path)
+    drill_path = dirname.split("/")
 
     cur = self.cur
-
-    drill_path = dirname.split("/")
 
     if treat_basename_as_directory:
       basename = os.path.basename(path)
