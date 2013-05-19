@@ -254,8 +254,7 @@ class TestVDir(unittest.TestCase):
     vd.open("opt/virtualenv/quail").write("foo")
     vd.rm("opt/virtualenv/quail")
 
-    quail = vd.open("opt/virtualenv/quail")
-    self.assertEqual("", quail.read())
+    self.assertRaises(VIOError, vd.open, "opt/virtualenv/quail", create=False)
 
   def test_zipfile(self):
     vd = VDir()
