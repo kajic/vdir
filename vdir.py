@@ -180,16 +180,16 @@ class VDir(VBase, dict):
     else:
       return vobj
 
-  def mkdir(self, path, create_intermediate=False):
+  def mkdir(self, path, create_intermediate=False, overwrite=False):
     container_path = os.path.dirname(path)
-    if not create_intermediate and not self.is_directory(container_path):
+    if not create_intermediate and not overwrite and not self.is_directory(container_path):
       raise VIOError("%s is not a directory" % container_path)
     else:
       # We can turn on creation of intermediate directories because we 
       # now know that only the last intermediate directory is missing
       create_intermediate = True
       
-    cur = self.drill(path, create_intermediate=create_intermediate, treat_basename_as_directory=True)
+    cur = self.drill(path, create_intermediate=create_intermediate, treat_basename_as_directory=True, overwrite=overwrite)
     return cur
 
   def cd(self, path):
@@ -214,6 +214,8 @@ class VDir(VBase, dict):
       destination.drill(vobj.name, treat_basename_as_directory=True)
       destination.cd(vobj.name)
       for base, dirnames, dirs, filenames, files in vobj.walk():
+        if not destination.open(base).is_directory():
+          destination.mkdir(base, overwrite=True)
         destination.cd(base)
         for cur in dirs+files:
           destination.cur[cur.name] = cur

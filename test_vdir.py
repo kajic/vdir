@@ -49,6 +49,16 @@ class TestVDir(unittest.TestCase):
   def test_mkdir_no_intermediate(self):
     self.assertRaises(VIOError, self.vd.mkdir, "bar/foo")
 
+  def test_mkdir_overwrite(self):
+    self.vd.open("foo/bar").write("baz")
+    self.vd.mkdir("foo/bar", overwrite=True)
+    self.assertTrue(self.vd.open("foo/bar").is_directory())
+
+  def test_mkdir_overwrite_intermediate(self):
+    self.vd.open("foo/bar").write("baz")
+    self.vd.mkdir("foo/bar/baz", overwrite=True)
+    self.assertTrue(self.vd.open("foo/bar/baz").is_directory())
+
   def test_cd(self):
     vd = VDir()
 
