@@ -1,6 +1,8 @@
 import unittest
 
-from vdir import VFile, VDir, VIOError
+from vobj import VIOError
+from vfile import VFile
+from vdir import VDir
 
 class TestVFile(unittest.TestCase):
   def test_read_write(self):
