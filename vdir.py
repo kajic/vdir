@@ -3,6 +3,7 @@ import zipfile
 
 from copy import deepcopy
 from StringIO import StringIO
+from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 
 class VIOError(IOError): pass
 
@@ -269,16 +270,16 @@ class VDir(VBase, dict):
       # Add child directories to walk candiates
       candiates.extend([(dir[name], path+[name]) for name in dirnames])
 
-  def zipfile(self, mode="w", compression=zipfile.ZIP_DEFLATED, exclude_compress=[]):
-    zip_data = VFile("vdir.zip")
-    zipfile_object = zipfile.ZipFile(zip_data, "w", compression)
+  def compress(self, mode="w", compression=ZIP_DEFLATED, exclude_compress=[]):
+    out = VFile("vdir.zip")
+    zipfile = ZipFile(out, "w", compression)
 
     for base, dirnames, dirs, filenames, files in self.walk():
       for name, file in zip(filenames, files):
         path = os.path.join(base, name)
         data = file.getvalue()
-        file_compression = zipfile.ZIP_STORED if name in exclude_compress else compression
-        zipfile_object.writestr(path, data, file_compression)
+        file_compression = ZIP_STORED if name in exclude_compress else compression
+        zipfile.writestr(path, data, file_compression)
 
-    zip_data.seek(0)
-    return zip_data
+    out.seek(0)
+    return out
