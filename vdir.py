@@ -17,6 +17,12 @@ class VDir(VObj, dict):
     self["."] = self
     self[".."] = self.parent
 
+  def __str__(self):
+    def pluralize(self, str, str_many, count):
+      return str if count == 1 else str_many
+    # Subtract 3 for the three sub-directories that all dirs have: "", ".", ".."
+    return "<VDir: %s>, %i %s" % (self.name, len(self)-3, pluralize("child", "children", len(self)-3))
+
   def is_file(self, path=None):
     if not path:
       return False

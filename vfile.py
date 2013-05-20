@@ -9,6 +9,9 @@ class VFile(VObj, StringIO):
 
     self.set_mode(mode)
 
+  def __str__(self):
+    return "<VFile: %s>" % self.name
+
   def is_file(self):
     return True
 

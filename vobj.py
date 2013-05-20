@@ -7,9 +7,6 @@ class VObj(object):
       parent = self
     self.parent = parent
 
-  def __str__(self):
-    return "<%s>: %s" % (self.name,  super(VObj, self).__str__())
-
   def __eq__(self, other):
     return not self<other and not other<self
   def __ne__(self, other):
