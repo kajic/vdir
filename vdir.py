@@ -178,6 +178,20 @@ class VDir(VObj, dict):
       vobj = path_or_vobj
     vobj.unattach()
 
+  def ls(self, recursive=True, depth=0):
+    def print_vdir(name, depth):
+      print "%s%s/" % (" "*depth, name)
+    print_vdir(self.name, depth)
+
+    for name, vobj in self.cur:
+      if vobj.is_directory():
+        if recursive:
+          vobj.ls(depth=depth+1)
+        else:
+          print_vdir(vobj.name, depth+1)
+      else:
+        print "%s%s" % (" "*(depth+1), name)
+
   def walk(self, topdown=True):
     dirnames = []
     dirs = []
@@ -218,17 +232,3 @@ class VDir(VObj, dict):
 
     out.seek(0)
     return out
-
-  def ls(self, recursive=True, depth=0):
-    def print_vdir(name, depth):
-      print "%s%s/" % (" "*depth, name)
-    print_vdir(self.name, depth)
-
-    for name, vobj in self.cur:
-      if vobj.is_directory():
-        if recursive:
-          vobj.ls(depth=depth+1)
-        else:
-          print_vdir(vobj.name, depth+1)
-      else:
-        print "%s%s" % (" "*(depth+1), name)
