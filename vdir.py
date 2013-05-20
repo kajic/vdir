@@ -163,30 +163,35 @@ class VDir(VObj, dict):
       vobj = path_or_vobj
     vobj.unattach()
 
-  def walk(self):
-    candiates = [(self.cur, [])]
+  def walk(self, topdown=True):
+    dirnames = []
+    dirs = []
+    filenames = []
+    files = []
 
-    for dir, path in candiates:
-      dirnames = []
-      dirs = []
-      filenames = []
-      files = []
+    cur = self.cur
 
-      for name, vobj in dir.items():
-        if name in ["", ".", ".."]:
-          continue
+    for name, vobj in cur.items():
+      if name in ["", ".", ".."]:
+        continue
 
-        if vobj.is_directory():
-          dirnames.append(name)
-          dirs.append(vobj)
-        else:
-          filenames.append(name)
-          files.append(vobj)
+      if vobj.is_directory():
+        dirnames.append(name)
+        dirs.append(vobj)
+      else:
+        filenames.append(name)
+        files.append(vobj)
 
-      yield ("/".join(path), dirnames, dirs, filenames, files)
+    if topdown:
+      yield (cur.pwd(), dirnames, dirs, filenames, files)
 
-      # Add child directories to walk candiates
-      candiates.extend([(dir[name], path+[name]) for name in dirnames])
+    for dir in dirs:
+      # Propagate results to root walk
+      for result in dir.walk():
+        yield result
+
+    if not topdown:
+      yield (cur.pwd(), dirnames, dirs, filenames, files)
 
   def compress(self, mode="w", compression=ZIP_DEFLATED, exclude_compress=[]):
     out = VFile("vdir.zip")
