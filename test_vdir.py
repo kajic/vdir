@@ -211,7 +211,7 @@ class TestVDir(unittest.TestCase):
     vd.open("opt/virtualenv/quail").write("foo")
     vd.open("opt/virtualenv/egg").write("bar")
 
-    vd.mkdir("opt/virtualenv_copy/virtualdir/", create_intermediate=True)
+    vd.mkdir("opt/virtualenv_copy/virtualenv/", create_intermediate=True)
         
     vd.cp("opt/virtualenv/", "opt/virtualenv_copy/")
 
