@@ -172,7 +172,7 @@ class VDir(VObj, dict):
   def mv(self, path_or_vobj, new_path):
     self.cp(path_or_vobj, new_path, move=True)
 
-  def rm(self, path_or_vobj="."):
+  def rm(self, path_or_vobj=""):
     if isinstance(path_or_vobj, str):
       vobj = self.open(path_or_vobj)
     else:
