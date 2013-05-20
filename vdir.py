@@ -131,8 +131,9 @@ class VDir(VObj, dict):
       vobj.parent = destination.parent
       vobj.name = destination.name
     else:
-      destination.drill(vobj.name, treat_basename_as_directory=True)
-      destination.cd(vobj.name)
+      # Unattach vobj from it's parent so that walk may return
+      # base paths relative to vobj.
+      vobj.parent = vobj
       for base, dirnames, dirs, filenames, files in vobj.walk():
         if not destination.open(base).is_directory():
           destination.mkdir(base, overwrite=True)
