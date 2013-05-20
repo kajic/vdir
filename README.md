@@ -35,8 +35,12 @@ vd.open("unnecessary").write("foo")
 vd.rm("unnecessary")
 
 # Walk over all directories and files in the virtual directory
-for base, dirnames, dirs, filenames, files in self.walk():
+vd.cd("/")
+for base, dirnames, dirs, filenames, files in vd.walk():
   pass
+
+# Recursively list directory contents
+vd.ls()
   
 # Create a zip from the virtual directory
 zip = vd.compress()
