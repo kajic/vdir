@@ -23,6 +23,12 @@ class VDir(VObj, dict):
     # Subtract 3 for the three sub-directories that all dirs have: "", ".", ".."
     return "<VDir: %s>, %i %s" % (self.name, len(self)-3, pluralize("child", "children", len(self)-3))
 
+  def __iter__(self):
+    for name, vobj in self.iteritems():
+      if name in ["", ".", ".."]:
+        continue
+      yield name, vobj
+
   def is_file(self, path=None):
     if not path:
       return False
@@ -180,10 +186,7 @@ class VDir(VObj, dict):
 
     cur = self.cur
 
-    for name, vobj in cur.items():
-      if name in ["", ".", ".."]:
-        continue
-
+    for name, vobj in cur:
       if vobj.is_directory():
         dirnames.append(name)
         dirs.append(vobj)
