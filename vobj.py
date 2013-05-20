@@ -43,3 +43,4 @@ class VObj(object):
   def unattach(self):
     if not self.is_root():
       del self.parent[self.name]
+      self.parent = self
