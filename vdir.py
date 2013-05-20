@@ -226,4 +226,4 @@ class VDir(VObj, dict):
       if vobj.is_directory():
         vobj.visualize(depth+1)
       else:
-        print "%s%s" % (" "*depth, name)
+        print "%s%s" % (" "*(depth+1), name)
