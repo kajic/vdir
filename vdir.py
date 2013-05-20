@@ -84,7 +84,7 @@ class VDir(VObj, dict):
       
     return cur
 
-  def open(self, path, create=True, mode="rw"):
+  def open(self, path, mode="rw", create=True):
     vobj = self.drill(path, create_intermediate=create)
 
     basename = os.path.basename(path)
