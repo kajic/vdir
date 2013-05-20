@@ -1,5 +1,7 @@
 import unittest
 
+from StringIO import StringIO
+
 from vobj import VIOError
 from vfile import VFile
 from vdir import VDir
@@ -275,3 +277,34 @@ class TestVDir(unittest.TestCase):
     vd.open("opt/virtualenv/egg").write("bar")
         
     vd.compress()
+
+  def test_walk(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+
+    vd.cp("opt/virtualenv", "opt/virtualenv_copy")
+
+    vd.walk()
+
+  def test_walk_bottom_up(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+
+    vd.cp("opt/virtualenv", "opt/virtualenv_copy")
+
+    vd.walk(topdown=False)
+
+  def test_ls(self):
+    vd = VDir()
+
+    vd.open("opt/virtualenv/quail").write("foo")
+    vd.open("opt/virtualenv/egg").write("bar")
+
+    vd.cp("opt/virtualenv", "opt/virtualenv_copy")
+
+    stream = StringIO()
+    vd.ls(stream)
