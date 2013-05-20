@@ -128,6 +128,7 @@ class VDir(VObj, dict):
       # therefore we may simply overwrite it. The same is true if vobj
       # is a file; it is safe to overwrite the destination with it.
       destination.parent[destination.name] = vobj
+      vobj.parent = destination.parent
       vobj.name = destination.name
     else:
       destination.drill(vobj.name, treat_basename_as_directory=True)
@@ -138,6 +139,7 @@ class VDir(VObj, dict):
         destination.cd(base)
         for cur in dirs+files:
           destination.cur[cur.name] = cur
+          cur.parent = destination.cur
         destination.cd("-")
 
   def cp(self, path_or_vobj, new_path=None, move=False):
