@@ -218,3 +218,12 @@ class VDir(VObj, dict):
 
     out.seek(0)
     return out
+
+  def visualize(self, depth=0):
+    print "%s%s/" % (" "*depth, self.name)
+
+    for name, vobj in self.cur:
+      if vobj.is_directory():
+        vobj.visualize(depth+1)
+      else:
+        print "%s%s" % (" "*depth, name)
