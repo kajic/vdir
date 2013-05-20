@@ -6,7 +6,7 @@ from vobj import VObj, VIOError
 from vfile import VFile
 
 class VDir(VObj, dict):
-  def __init__(self, name=".", parent=None):
+  def __init__(self, name="", parent=None):
     VObj.__init__(self, name, parent)
     dict.__init__(self)
 
