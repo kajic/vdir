@@ -1,4 +1,5 @@
 import os
+import sys
 from copy import deepcopy
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 
@@ -178,19 +179,22 @@ class VDir(VObj, dict):
       vobj = path_or_vobj
     vobj.unattach()
 
-  def ls(self, recursive=True, depth=0):
+  def _ls(self, stream, recursive=True, depth=0):
     def print_vdir(name, depth):
-      print "%s%s/" % (" "*depth, name)
+      print >> stream, "%s%s/" % (" "*depth, name)
     print_vdir(self.name, depth)
 
     for name, vobj in self.cur:
       if vobj.is_directory():
         if recursive:
-          vobj.ls(depth=depth+1)
+          vobj._ls(stream=stream, depth=depth+1)
         else:
           print_vdir(vobj.name, depth+1)
       else:
-        print "%s%s" % (" "*(depth+1), name)
+        print >> stream, "%s%s" % (" "*(depth+1), name)
+
+  def ls(self, stream=sys.stdout, recursive=True):
+    self._ls(stream, recursive)
 
   def walk(self, topdown=True):
     dirnames = []
